@@ -1,4 +1,4 @@
-import functools
+import functools32 as functools
 import random
 import numpy as np
 import numpy.random
