@@ -4,6 +4,7 @@ if (sys.version_info < (3, 0)):
 else:
     import functools
 import random
+import pickle
 import numpy as np
 import numpy.random
 import scipy
@@ -353,9 +354,12 @@ def convolve_vsini(lam_templ, templ, vsini):
     xgrid = np.arange(-npts, npts + 1) * step
     kernel = kernelF(xgrid)
     kernel[np.abs(xgrid) > 1] = 0
+
     # ensure that the lambda is spaced logarithmically
-    assert (np.allclose(lam_templ[1] / lam_templ[0],
-                        lam_templ[-1] / lam_templ[-2]))
+    pickle.dump(lam_templ, open("/tmp/rv_code_raster", "wb"))
+    delta_lamba_on_lambda = (lam_templ[1:]-lam_templ[:-1]) / lam_templ[:-1]
+    assert (np.allclose(a=delta_lamba_on_lambda, b=delta_lamba_on_lambda[0], atol=1e-14, rtol=1e-12))
+
     templ1 = scipy.signal.fftconvolve(templ, kernel, mode='same')
     return templ1
 
